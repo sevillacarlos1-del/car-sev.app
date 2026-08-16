@@ -647,7 +647,7 @@ if "Inicio" in menu_option:
     # Logotipo principal
     logo_inicio = img_b64("logo1_original.png") or img_b64("logo_original.png") or img_b64("logo_192.png")
     
-    # --- CAMPO DE TEXTO (Ajustado y visible) ---
+    # --- CAMPO DE TEXTO ---
     requerimiento = st.text_input(
         label="¿En qué podemos ayudarte?",
         placeholder="Hola Car-Sev C.A.! Quisiera asesoría rápida sobre...",
@@ -761,8 +761,7 @@ if "Inicio" in menu_option:
             </div>
         </div>
     </div>
-    """, unsafe_allow_html=True)
-# ── 9. SECCIÓN 2: CATÁLOGO COMPLETO DE 14 MOLDES ─────────────────────────────
+    """, unsafe_allow_html=True)                                                                                                                                # ── 9. SECCIÓN 2: CATÁLOGO COMPLETO DE 14 MOLDES ─────────────────────────────
 elif "Catálogo" in menu_option:
     st.markdown("""
     <div style="text-align: center; padding: 20px 0 10px 0;">
