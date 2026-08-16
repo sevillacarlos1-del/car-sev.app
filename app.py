@@ -641,18 +641,17 @@ with st.sidebar:
     st.markdown(wa_button("Hola Car-Sev C.A.! Quisiera asesoría rápida sobre moldes de goma.", "💬 WhatsApp Directo"), unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-
 # ── 8. SECCIÓN 1: INICIO / PRESENTACIÓN ──────────────────────────────────────
 if "Inicio" in menu_option:
-    # Logotipo principal
+    # Logotipo principal (logo1_original.png = alta resolución)
     logo_inicio = img_b64("logo1_original.png") or img_b64("logo_original.png") or img_b64("logo_192.png")
-    
-    # --- CAMPO DE TEXTO ---
-    requerimiento = st.text_input(
-        label="¿En qué podemos ayudarte?",
-        placeholder="Hola Car-Sev C.A.! Quisiera asesoría rápida sobre...",
-        key="campo_texto_usuario"
-    )
+    if logo_inicio:
+        st.markdown(
+            '<div style="text-align:center; padding:20px 0 10px 0;">'
+            '<img src="' + logo_inicio + '" alt="Car-Sev C.A." style="max-width:260px; height:auto; display:block; margin:0 auto;">'
+            '</div>',
+            unsafe_allow_html=True
+        )
 
     # Encabezado Principal Hero
     st.markdown("""
@@ -667,11 +666,6 @@ if "Inicio" in menu_option:
     </div>
     <div class="divider-gold"></div>
     """, unsafe_allow_html=True)
-
-    # --- LOGO EN LA PARTE CENTRAL ---
-    col_logo1, col_logo_centro, col_logo2 = st.columns([1, 2, 1]) 
-    with col_logo_centro:
-        st.image("logo1_original.png", use_column_width=True)
 
     # Ventajas Clave / Pilares
     col1, col2, col3 = st.columns(3)
@@ -730,8 +724,8 @@ if "Inicio" in menu_option:
     # Reproductor de Video Streamlit integrado
     v_col1, v_col2, v_col3 = st.columns([1, 8, 1])
     with v_col2:
-        st.video("https://www.youtube.com/watch?v=...")
-  
+      st.video("https://www.youtube.com/watch?v=g1pTvoL8Q10")
+
     # Paso a Paso del Estampado
     st.markdown("""
     <div style="margin-top: 36px; padding: 28px; background: #FFFFFF; border: 2px solid #D4AF37; border-radius: 16px; box-shadow: 0 4px 20px rgba(212,175,55,0.12);">
@@ -761,7 +755,10 @@ if "Inicio" in menu_option:
             </div>
         </div>
     </div>
-    """, unsafe_allow_html=True)                                                                                                                                # ── 9. SECCIÓN 2: CATÁLOGO COMPLETO DE 14 MOLDES ─────────────────────────────
+    """, unsafe_allow_html=True)
+
+
+# ── 9. SECCIÓN 2: CATÁLOGO COMPLETO DE 14 MOLDES ─────────────────────────────
 elif "Catálogo" in menu_option:
     st.markdown("""
     <div style="text-align: center; padding: 20px 0 10px 0;">
