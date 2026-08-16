@@ -729,9 +729,8 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-    # Reproductor de Video Streamlit integrado
-v_col1, v_col2, v_col3 = st.columns([1, 8, 1])
-    with v_col2:
+    # Reproductor de Video Streamlit integrado                                                                                                                  v_col1, v_col2, v_col3 = st.columns([1, 8, 1])
+      with v_col2:
       st.video("https://www.youtube.com/watch?v=g1pTvoL8Q10")
 
     # Paso a Paso del Estampado
