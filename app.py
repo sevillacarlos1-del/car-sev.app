@@ -644,17 +644,15 @@ with st.sidebar:
 
 # ── 8. SECCIÓN 1: INICIO / PRESENTACIÓN ──────────────────────────────────────
 if "Inicio" in menu_option:
-    # Logotipo principal (logo1_original.png = alta resolución)
+    # Logotipo principal
     logo_inicio = img_b64("logo1_original.png") or img_b64("logo_original.png") or img_b64("logo_192.png")
-    if logo_inicio:
-       # --- CAMPO DE TEXTO ---
-# Usamos text_input para que funcione fluido en todos lados
-        requerimiento = st.text_input(
+    
+    # --- CAMPO DE TEXTO (Ajustado y visible) ---
+    requerimiento = st.text_input(
         label="¿En qué podemos ayudarte?",
         placeholder="Hola Car-Sev C.A.! Quisiera asesoría rápida sobre...",
         key="campo_texto_usuario"
     )
-        
 
     # Encabezado Principal Hero
     st.markdown("""
@@ -670,15 +668,15 @@ if "Inicio" in menu_option:
     <div class="divider-gold"></div>
     """, unsafe_allow_html=True)
 
-  # --- LOGO EN LA PARTE CENTRAL ---
-col_logo1, col_logo_centro, col_logo2 = st.columns([1, 2, 1]) 
-with col_logo_centro:
-    st.image("logo1_original.png", use_column_width=True)
+    # --- LOGO EN LA PARTE CENTRAL ---
+    col_logo1, col_logo_centro, col_logo2 = st.columns([1, 2, 1]) 
+    with col_logo_centro:
+        st.image("logo1_original.png", use_column_width=True)
 
-# Ventajas Clave / Pilares
-col1, col2, col3 = st.columns(3)
+    # Ventajas Clave / Pilares
+    col1, col2, col3 = st.columns(3)
 
-with col1:
+    with col1:
         st.markdown("""
         <div class="luxury-card" style="text-align:center; height:100%;">
             <div style="font-size: 2.2rem; margin-bottom: 10px;">🛡️</div>
@@ -690,7 +688,7 @@ with col1:
         </div>
         """, unsafe_allow_html=True)
 
-with col2:
+    with col2:
         st.markdown("""
         <div class="luxury-card" style="text-align:center; height:100%;">
             <div style="font-size: 2.2rem; margin-bottom: 10px;">🎨</div>
@@ -702,7 +700,7 @@ with col2:
         </div>
         """, unsafe_allow_html=True)
 
-with col3:
+    with col3:
         st.markdown("""
         <div class="luxury-card" style="text-align:center; height:100%;">
             <div style="font-size: 2.2rem; margin-bottom: 10px;">⚡</div>
@@ -714,10 +712,10 @@ with col3:
         </div>
         """, unsafe_allow_html=True)
 
-st.markdown('<div class="divider-gold"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="divider-gold"></div>', unsafe_allow_html=True)
 
     # 📹 SECCIÓN DESTACADA DE VIDEO DE YOUTUBE INTERACTIVO
-st.markdown("""
+    st.markdown("""
     <div style="text-align: center; margin-bottom: 24px;">
         <span class="ornament-gold">✦ DEMOSTRACIÓN EN OBRA & TALLER ✦</span>
         <h2 style="font-family:'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); color: #1A1A1A; margin: 8px 0;">
@@ -729,10 +727,10 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-   # Reproductor de Video Streamlit integrado
-   v_col1, v_col2, v_col3 = st.columns([1, 8, 1])
-   with v_col2:
-     st.video("https://www.youtube.com/watch?v=...")
+    # Reproductor de Video Streamlit integrado
+    v_col1, v_col2, v_col3 = st.columns([1, 8, 1])
+    with v_col2:
+        st.video("https://www.youtube.com/watch?v=...")
   
     # Paso a Paso del Estampado
     st.markdown("""
@@ -764,8 +762,6 @@ st.markdown("""
         </div>
     </div>
     """, unsafe_allow_html=True)
-
-
 # ── 9. SECCIÓN 2: CATÁLOGO COMPLETO DE 14 MOLDES ─────────────────────────────
 elif "Catálogo" in menu_option:
     st.markdown("""
