@@ -404,7 +404,7 @@ inject_custom_css_and_pwa()
 # Aviso Móvil Responsivo
 st.markdown("""
 <div class="mobile-notice">
-    💡 <b>¿Nos visitas desde el celular?</b> Toca el botón dorado <b>☰</b> en la esquina superior izquierda para desplegar el menú de navegación y explorar los 14 moldes.
+    💡 <b>¿Nos visitas desde el celular?</b> Toca en la parte superior IZQUIERDA <b>☰</b> en la esquina superior IZQUIERDA para desplegar el menú de navegación y explorar los 14 moldes.
 </div>
 """, unsafe_allow_html=True)
 
@@ -856,7 +856,7 @@ elif "Cotizador" in menu_option:
         st.markdown('<div class="luxury-card">', unsafe_allow_html=True)
         st.markdown('<div class="card-title">Parámetros del Proyecto</div>', unsafe_allow_html=True)
 
-        m2_area = st.number_input("Área total a estampar (m²):", min_value=10, max_value=10000, value=120, step=10)
+        m2_area = st.number_input("Área total a estampar (m²):", min_value=10, max_value=10000, value=100, step=10)
 
         mold_type = st.selectbox(
             "Selecciona el Diseño de Molde Principal (14 disponibles):",
@@ -871,8 +871,8 @@ elif "Cotizador" in menu_option:
         )
 
         st.markdown("<p style='font-weight:700; color:#1A1A1A; margin-top:16px;'>Insumos Complementarios de Estampado:</p>", unsafe_allow_html=True)
-        inc_color = st.checkbox("Endurecedor de Color en Polvo (5 kg/m²)", value=True)
-        inc_release = st.checkbox("Desmoldante en Polvo Anti-Adherente (0.15 kg/m²)", value=True)
+        inc_color = st.checkbox("Endurecedor de Color en Polvo (2.40 kg/m²)", value=True)
+        inc_release = st.checkbox("Desmoldante en Polvo Anti-Adherente (0.08 kg/m²)", value=True)
         inc_flex = st.checkbox("Incluir Molde Flex Ultra-Plegable para Remates de Paredes", value=True)
         inc_sealer = st.checkbox("Sellador Acrílico de Lujo Alto Brillo (0.20 L/m²)", value=True)
 
@@ -886,8 +886,8 @@ elif "Cotizador" in menu_option:
         subtotal_molds = (rigid_count * selected_mold_obj["price_usd"]) + (flex_count * 55.00)
 
         # Insumos estimados
-        kg_color = m2_area * 5.0 if inc_color else 0
-        kg_release = m2_area * 0.15 if inc_release else 0
+        kg_color = m2_area * 2.40 if inc_color else 0
+        kg_release = m2_area * 0.08 if inc_release else 0
         liters_sealer = m2_area * 0.20 if inc_sealer else 0
 
         st.markdown("""
