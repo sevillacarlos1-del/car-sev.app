@@ -730,7 +730,7 @@ if "Inicio" in menu_option:
     st.markdown("""
     <div style="margin-top: 36px; padding: 28px; background: #FFFFFF; border: 2px solid #D4AF37; border-radius: 16px; box-shadow: 0 4px 20px rgba(212,175,55,0.12);">
         <h3 style="font-family:'Playfair Display', serif; color: #8B0000; font-size: 1.4rem; text-align: center; margin-bottom: 20px;">
-            Proceso Estándar de Estampado de Pavimentos
+        Proceso Estándar de Estampado de Pavimentos
         </h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
             <div style="padding: 12px; border-left: 3px solid #D4AF37;">
