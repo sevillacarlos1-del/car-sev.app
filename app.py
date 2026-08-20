@@ -731,7 +731,6 @@ if "Inicio" in menu_option:
     <div style="margin-top: 36px; padding: 28px; background: #FFFFFF; border: 2px solid #D4AF37; border-radius: 16px; box-shadow: 0 4px 20px rgba(212,175,55,0.12);">
         <h3 style="font-family:'Playfair Display', serif; color: #8B0000; font-size: 1.4rem; text-align: center; margin-bottom: 20px;">
         </div>
-    
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
             <div style="padding: 12px; border-left: 3px solid #D4AF37;">
                 <p style="font-weight: 700; color: #AA820A; font-size: 0.8rem;">PASO 1</p>
@@ -743,7 +742,6 @@ if "Inicio" in menu_option:
                 <p style="font-weight: 600; color: #1A1A1A;">Color & Desmoldante</p>
                 <p style="font-size: 0.82rem; color: #555555;">Esparcido de endurecedor de color y capa desmoldante protectora.</p>
             </div>
-            
             <div style="padding: 12px; border-left: 3px solid #D4AF37;">
                 <p style="font-weight: 700; color: #AA820A; font-size: 0.8rem;">PASO 3</p>
                 <p style="font-weight: 600; color: #1A1A1A;">Estampado Car-Sev</p>
