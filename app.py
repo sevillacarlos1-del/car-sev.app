@@ -9,37 +9,95 @@ Optimizado para Navegación Móvil (iOS / Android) y Despliegue en Render
 import base64
 import urllib.parse
 from pathlib import Path
+from PIL import Image
 import streamlit as st
 
-# --- TÍTULO DE LA PESTAÑA DEL NAVEGADOR ---
+# =========================================================
+# 1. RELOJ KEEP-ALIVE (PING RENDER)
+# =========================================================
+if st.query_params.get("ping") == "true":
+    st.write("pong")
+    st.stop()
+
+# =========================================================
+# 2. 🛠️ PARCHE AUTOMÁTICO PWA Y RECURSOS ASSETS
+# =========================================================
+ROOT_DIR = Path(__file__).parent.resolve()
+ASSETS_DIR = ROOT_DIR / "assets"
+
+try:
+    from patch_index import patch_streamlit_index
+    patch_streamlit_index()
+except Exception as e:
+    pass
+
+# Cargar favicon físico si existe el logo
+favicon_img = "⚙️"
+logo_path = ASSETS_DIR / "logo_192.png"
+if logo_path.exists():
+    try:
+        favicon_img = Image.open(logo_path)
+    except Exception:
+        favicon_img = "⚙️"
+
 st.set_page_config(
     page_title="CAR-SEV C.A. - Moldes y Filtros",
-    page_icon="⚙️",
+    page_icon=favicon_img,
     layout="wide",
     initial_sidebar_state="auto"
 )
 
+# =========================================================
+# 3. METADATOS PWA, FAVICON Y ESTILOS GLOBALES
+# =========================================================
 st.markdown("""
-    <style>
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-...        
-        /* Botón de la barra lateral visible y en tono dorado */
-        [data-testid="collapsedControl"] {
-            display: flex !important;
-            visibility: visible !important;
-            z-index: 999999 !important;
-            background-color: rgba(212, 175, 55, 0.9) !important;
-            border-radius: 6px;
-            padding: 6px !important;
-            margin: 6px !important;
-        }
-        [data-testid="collapsedControl"] svg {
-            fill: #1a1a1a !important;
-            color: #1a1a1a !important;
-        }
-    </style>
-""", unsafe_allow_html=True)                                                                                                                                  # ── 2. RUTAS RELATIVAS SEGURAS (RENDER & LOCAL) ──────────────────────────────
+<!-- Enlace al Manifest e Iconos PWA desde carpeta assets -->
+<link rel="manifest" href="/app/static/assets/manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="/app/static/assets/logo_192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/app/static/assets/logo_192.png">
+<meta name="theme-color" content="#1E293B">
+
+<style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Botón de la barra lateral visible y en tono dorado */
+    [data-testid="collapsedControl"] {
+        display: flex !important;
+        visibility: visible !important;
+        z-index: 999999 !important;
+        background-color: rgba(212, 175, 55, 0.9) !important;
+        border-radius: 6px;
+        padding: 6px !important;
+        margin: 6px !important;
+    }
+    [data-testid="collapsedControl"] svg {
+        fill: #1a1a1a !important;
+        color: #1a1a1a !important;
+    }
+
+    /* FIX: Color visible para pestañas y botones de navegación (Inicio, Catálogo, etc.) */
+    button[data-baseweb="tab"], .stButton > button {
+        color: #ffffff !important; /* Texto blanco bien visible */
+        font-weight: bold !important;
+        font-size: 16px !important;
+        background-color: rgba(255, 255, 255, 0.08) !important; /* Fondo suave para que resalte */
+        border-radius: 8px !important;
+        border: 1px solid rgba(212, 175, 55, 0.4) !important; /* Borde dorado tenue */
+        padding: 8px 16px !important;
+        margin: 2px !important;
+    }
+
+    /* Estado activo o al pasar el mouse */
+    button[data-baseweb="tab"][aria-selected="true"], .stButton > button:hover {
+        color: #1a1a1a !important; /* Texto oscuro al seleccionar */
+        background-color: #d4af37 !important; /* Fondo dorado brillante */
+        border-color: #d4af37 !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ── 3. RUTAS RELATIVAS SEGURAS (RENDER & LOCAL) ──────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
 
@@ -47,7 +105,6 @@ ASSETS_DIR = BASE_DIR / "assets"
 WHATSAPP_NUMBER = "584166481679"
 WHATSAPP_DISPLAY = "+58 (416) 648-1679"
 WHATSAPP_BASE = f"https://wa.me/{WHATSAPP_NUMBER}"
-
 
 # ── 3. MOTOR DE IMÁGENES EN BASE64 CON CACHÉ ─────────────────────────────────
 @st.cache_data(show_spinner=False)
@@ -94,7 +151,7 @@ def inject_custom_css_and_pwa():
     :root {
         --bg-main: #FFFFFF;
         --bg-alt: #FAFAF8;
-        --gold-primary: #D4AF37;f
+        --gold-primary: #D4AF37;
         --gold-light: #FFE57F;
         --gold-dark: #AA820A;
         --chic-red: #8B0000;
@@ -404,7 +461,7 @@ inject_custom_css_and_pwa()
 # Aviso Móvil Responsivo
 st.markdown("""
 <div class="mobile-notice">
-    💡 <b>¿Nos visitas desde el celular?</b> Toca en la parte superior IZQUIERDA <b>☰</b> en la esquina superior IZQUIERDA para desplegar el menú de navegación y explorar los 14 moldes.
+    💡 <b>¿Nos visitas desde el celular?</b> Toca la parte superior IZQUIERDA Aparecerá Un botoncito Gris <b>☰</b> en la esquina superior izquierda para desplegar el menú de navegación y explorar los 14 moldes.
 </div>
 """, unsafe_allow_html=True)
 
@@ -606,10 +663,10 @@ with st.sidebar:
     menu_option = st.radio(
         "Navegación Principal",
         [
-            "🏠  Inicio",
-            "🧩  Catálogo",
-            "🧮  Cotizador",
-            "📍  Contacto"
+            "🏠 Inicio",
+            "📖 Catálogo",
+            "🧮 Cotizador",
+            "📞 Contacto"
         ],
         index=0
     )
@@ -636,13 +693,14 @@ with st.sidebar:
             <p style="font-size:0.85rem; font-weight:700; color:#1A1A1A; margin:4px 0;">{WHATSAPP_DISPLAY}</p>
             <p style="font-size:0.75rem; color:#555555; margin-bottom:10px;">Valencia / Envíos a Nivel Nacional</p>
         </div>
- """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
     st.markdown(wa_button("Hola Car-Sev C.A.! Quisiera asesoría rápida sobre moldes de goma.", "💬 WhatsApp Directo"), unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
+
 # ── 8. SECCIÓN 1: INICIO / PRESENTACIÓN ──────────────────────────────────────
-if "Inicio" in menu_option:
+if "🏠 Inicio" in menu_option or "Inicio" in menu_option:
     # Logotipo principal (logo1_original.png = alta resolución)
     logo_inicio = img_b64("logo1_original.png") or img_b64("logo_original.png") or img_b64("logo_192.png")
     if logo_inicio:
@@ -724,13 +782,14 @@ if "Inicio" in menu_option:
     # Reproductor de Video Streamlit integrado
     v_col1, v_col2, v_col3 = st.columns([1, 8, 1])
     with v_col2:
-    st.video("https://www.youtube.com/watch?v=g1pTvoL8Q10")
+        st.video("https://www.youtube.com/watch?v=g1pTvoL8Q10")
 
     # Paso a Paso del Estampado
     st.markdown("""
     <div style="margin-top: 36px; padding: 28px; background: #FFFFFF; border: 2px solid #D4AF37; border-radius: 16px; box-shadow: 0 4px 20px rgba(212,175,55,0.12);">
         <h3 style="font-family:'Playfair Display', serif; color: #8B0000; font-size: 1.4rem; text-align: center; margin-bottom: 20px;">
-        </div>
+            Proceso de Instalación y Estampado Profesional
+        </h3>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
             <div style="padding: 12px; border-left: 3px solid #D4AF37;">
                 <p style="font-weight: 700; color: #AA820A; font-size: 0.8rem;">PASO 1</p>
@@ -750,15 +809,14 @@ if "Inicio" in menu_option:
             <div style="padding: 12px; border-left: 3px solid #D4AF37;">
                 <p style="font-weight: 700; color: #AA820A; font-size: 0.8rem;">PASO 4</p>
                 <p style="font-weight: 600; color: #1A1A1A;">Lavado & Sellado Lujo</p>
-                <p style="font-size: 0.82rem; color: #555555;">Lavado a presión de excesos y aplicación de sellador acrílico protector brillante.</p>
+                <p style="font-size: 0.82rem; color: #555555;">Lavado a presión de excesos y aplicación de sellador acrílico activado protector brillante.</p>
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-
-# ── 9. SECCIÓN 2: CATÁLOGO COMPLETO DE 14 MOLDES ─────────────────────────────
-elif "Catálogo" in menu_option:
+# ── 9. SECCIÓN 2: CATÁLOGO COMPLETO DE 14 MOLDES ────────────────────────────
+elif "📖 Catálogo" in menu_option or "Catálogo" in menu_option:
     st.markdown("""
     <div style="text-align: center; padding: 20px 0 10px 0;">
         <span class="ornament-gold">✦ GALERÍA DE 14 MODELOS EXCLUSIVOS ✦</span>
@@ -823,7 +881,7 @@ elif "Catálogo" in menu_option:
 
 
 # ── 10. SECCIÓN 3: COTIZADOR / PEDIDOS INTERACTIVO CON FICHA PDF ─────────────
-elif "Cotizador" in menu_option:
+elif "🧮 Cotizador" in menu_option or "Cotizador" in menu_option:
     st.markdown("""
     <div style="text-align: center; padding: 20px 0 10px 0;">
         <span class="ornament-gold">✦ CALCULADORA DE PROYECTO & MATERIALES ✦</span>
@@ -849,48 +907,57 @@ elif "Cotizador" in menu_option:
         )
         st.markdown("<br>", unsafe_allow_html=True)
 
-    c_col1, c_col2 = st.columns([1.1, 1], gap="large")
+    # ── PASO 1: CONTROLES PRINCIPALES DE ENTRADA ──
+    st.markdown('<div class="luxury-card">', unsafe_allow_html=True)
+    st.markdown('<div class="card-title">Parámetros del Proyecto</div>', unsafe_allow_html=True)
+
+    c_col1, c_col2, c_col3 = st.columns([1, 1.2, 1.2], gap="small")
 
     with c_col1:
-        st.markdown('<div class="luxury-card">', unsafe_allow_html=True)
-        st.markdown('<div class="card-title">Parámetros del Proyecto</div>', unsafe_allow_html=True)
-
         m2_area = st.number_input("Área total a estampar (m²):", min_value=10, max_value=10000, value=100, step=10)
-
+    with c_col2:
         mold_type = st.selectbox(
             "Selecciona el Diseño de Molde Principal (14 disponibles):",
             [p["name"] for p in CATALOG]
         )
-
         selected_mold_obj = next((p for p in CATALOG if p["name"] == mold_type), CATALOG[0])
-
+    with c_col3:
         crew_size = st.selectbox(
             "Cantidad de Cuadrillas de Trabajo Simultáneas:",
             ["1 Cuadrilla (Estándar: 3-4 Moldes Rígidos)", "2 Cuadrillas (Obra Rápida: 6-8 Moldes Rígidos)"]
         )
 
-        st.markdown("<p style='font-weight:700; color:#1A1A1A; margin-top:16px;'>Insumos Complementarios de Estampado:</p>", unsafe_allow_html=True)
-        inc_color = st.checkbox("Endurecedor de Color en Polvo (2.40 kg/m²)", value=True)
-        inc_release = st.checkbox("Desmoldante en Polvo Anti-Adherente (0.08 kg/m²)", value=True)
-        inc_flex = st.checkbox("Incluir Molde Flex Ultra-Plegable para Remates de Paredes", value=True)
-        inc_sealer = st.checkbox("Sellador Acrílico activado de Lujo Alto Brillo (0.20 L/m²)", value=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("</div>", unsafe_allow_html=True)
+    # Contenedor para renderizar el Resumen Técnico inmediatamente debajo en pantalla (Paso 2)
+    summary_container = st.container()
 
-    with c_col2:
-        # CÁLCULOS TÉCNICOS AUTOMATIZADOS
-        rigid_count = 4 if "1 Cuadrilla" in crew_size else 8
-        flex_count = 1 if inc_flex else 0
+    # ── PASO 3: OPCIONES SECUNDARIAS DE INSUMOS COMPLEMENTARIOS (COMPACTAS / ABAJO) ──
+    with st.expander("🧪 Ajustar Insumos Complementarios y Molde Flex (Opcional)", expanded=False):
+        st.markdown("<p style='font-weight:700; color:#1A1A1A; margin-bottom:6px; font-size:0.85rem;'>Selecciona los insumos a incluir en la estimación:</p>", unsafe_allow_html=True)
+        chk_col1, chk_col2 = st.columns(2, gap="small")
+        with chk_col1:
+            inc_color = st.checkbox("Endurecedor de Color en Polvo (2.40 kg/m²)", value=True)
+            inc_release = st.checkbox("Desmoldante en Polvo Anti-Adherente (0.08 kg/m²)", value=True)
+        with chk_col2:
+            inc_flex = st.checkbox("Incluir Molde Flex Ultra-Plegable para Remates de Paredes", value=True)
+            inc_sealer = st.checkbox("Sellador Acrílico activado de Lujo Alto Brillo (0.20 L/m²)", value=True)
 
-        subtotal_molds = (rigid_count * selected_mold_obj["price_usd"]) + (flex_count * 220.00)
+    # ── CÁLCULOS TÉCNICOS AUTOMATIZADOS ──
+    rigid_count = 4 if "1 Cuadrilla" in crew_size else 8
+    flex_count = 1 if inc_flex else 0
 
-        # Insumos estimados
-        kg_color = m2_area * 2.40 if inc_color else 0
-        kg_release = m2_area * 0.08 if inc_release else 0
-        liters_sealer = m2_area * 0.20 if inc_sealer else 0
+    subtotal_molds = (rigid_count * selected_mold_obj["price_usd"]) + (flex_count * 210.00)
 
+    # Insumos estimados
+    kg_color = m2_area * 2.40 if inc_color else 0
+    kg_release = m2_area * 0.08 if inc_release else 0
+    liters_sealer = m2_area * 0.20 if inc_sealer else 0
+
+    # ── PASO 2: RENDERIZADO DEL RESUMEN TÉCNICO EN EL CONTENEDOR SUPERIOR ──
+    with summary_container:
         st.markdown("""
-        <div class="luxury-card" style="background:#FAFAF8 !important;">
+        <div class="luxury-card" style="background:#FAFAF8 !important; margin-top:15px; margin-bottom:15px;">
             <div class="card-subtitle">RESUMEN TÉCNICO DE REQUERIMIENTOS</div>
             <div class="card-title">Presupuesto Estimado de Equipamiento</div>
             <hr style="border:0; border-top:1px solid #D4AF37; margin:12px 0;">
@@ -915,7 +982,7 @@ elif "Cotizador" in menu_option:
             <ul style="font-size:0.8rem; color:#555555; padding-left:18px; margin:0;">
                 <li>Colorante Endurecedor: <strong>{kg_color:.1f} kg</strong></li>
                 <li>Desmoldante en Polvo: <strong>{kg_release:.1f} kg</strong></li>
-                <li>Sellador Acrílico Lujo: <strong>{liters_sealer:.1f} Litros</strong></li>
+                <li>Sellador Acrílico Activado Lujo: <strong>{liters_sealer:.1f} Litros</strong></li>
             </ul>
         </div>
 
@@ -940,11 +1007,10 @@ elif "Cotizador" in menu_option:
         )
 
         st.markdown(wa_button(quote_msg, "✦ Enviar Cotización por WhatsApp"), unsafe_allow_html=True)
-        
-
+        st.markdown("</div>", unsafe_allow_html=True)
 
 # ── 11. SECCIÓN 4: CONTACTO & UBICACIÓN SATELITAL (VALENCIA, VENEZUELA) ───────
-elif "Contacto" in menu_option:
+elif "📞 Contacto" in menu_option or "Contacto" in menu_option:
     st.markdown("""
     <div style="text-align: center; padding: 20px 0 10px 0;">
         <span class="ornament-gold">✦ ATENCIÓN INSTITUCIONAL & ASESORÍA ✦</span>
@@ -959,11 +1025,11 @@ elif "Contacto" in menu_option:
     """, unsafe_allow_html=True)
 
     ct_col1, ct_col2 = st.columns([1, 1], gap="large")
-    
+
     with ct_col1:
         st.markdown(f"""
         <div style="margin-bottom:16px;">
-            <div style="font-size:0.75rem; color:#AA820A; font-weight:700; text-transform:uppercase;">Planta Industrial & Sede Principal:</div>
+            <div style="font-size:0.75rem; color:#AA820A; font-weight:700; text-transform:uppercase;">FABRICACION & PRICIPAL:</div>
             <div style="font-size:0.9rem; font-weight:600; color:#1A1A1A;">Fabricacion Urbanizacion Parque valencia Car-Sev C.A., Valencia, Estado Carabobo, Venezuela.</div>
         </div>
 
@@ -982,8 +1048,8 @@ elif "Contacto" in menu_option:
             <div style="font-size:0.88rem; color:#555555;">Lunes a Viernes: 8:00 AM – 5:00 PM | Sábados: 8:00 AM – 12:00 PM</div>
         </div>
         """, unsafe_allow_html=True)
-        
-        st.markdown(wa_button("Hola Car-Sev C.A.! Quisiera coordinar una visita a la planta en Valencia o solicitar cotización.", "✦ Escribir a WhatsApp Oficial (+58 0416-6481679)"), unsafe_allow_html=True)
+
+        st.markdown(wa_button("Hola Car-Sev C.A.! Quisiera coordinar una visita en Valencia o solicitar cotización.", "✦ Escribir a WhatsApp Oficial (+58 0416-6481679)"), unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with ct_col2:
@@ -1021,94 +1087,95 @@ elif "Contacto" in menu_option:
         </div>
         """, unsafe_allow_html=True)
 
-       # 1. Estilos CSS optimizados para el Formulario
-    st.markdown("""
-    <style>
-        /* Contenedor del formulario */
-        div[data-testid="stForm"] {
-            border: none !important;
-            padding: 0 !important;
-        }
+        # 1. Estilos CSS optimizados para el Formulario
+        st.markdown("""
+        <style>
+            /* Contenedor del formulario */
+            div[data-testid="stForm"] {
+                border: none !important;
+                padding: 0 !important;
+            }
 
-        /* Estilo para los Labels (Títulos de los campos) */
-        div[data-testid="stForm"] label {
-            color: #1A1A1A !important;
-            font-weight: 600 !important;
-            font-size: 0.85rem !important;
-            margin-bottom: 4px !important;
-        }
+            /* Estilo para los Labels (Títulos de los campos) */
+            div[data-testid="stForm"] label {
+                color: #1A1A1A !important;
+                font-weight: 600 !important;
+                font-size: 0.85rem !important;
+                margin-bottom: 4px !important;
+            }
 
-        /* Campos de texto y área de texto: Fondo claro, bordes limpios y texto oscuro */
-        div.stTextInput > div > div > input, 
-        div.stTextArea > div > div > textarea {
-            background-color: #FAFAFA !important;
-            color: #1A1A1A !important;
-            border: 1px solid #D1D5DB !important;
-            border-radius: 8px !important;
-            padding: 12px !important;
-            font-family: 'Montserrat', sans-serif !important;
-        }
+            /* Campos de texto y área de texto: Fondo claro, bordes limpios y texto oscuro */
+            div.stTextInput > div > div > input, 
+            div.stTextArea > div > div > textarea {
+                background-color: #FAFAFA !important;
+                color: #1A1A1A !important;
+                border: 1px solid #D1D5DB !important;
+                border-radius: 8px !important;
+                padding: 12px !important;
+                font-family: 'Montserrat', sans-serif !important;
+            }
 
-        /* Focus en los campos (al hacer clic) */
-        div.stTextInput > div > div > input:focus, 
-        div.stTextArea > div > div > textarea:focus {
-            border-color: #AA820A !important;
-            box-shadow: 0 0 0 1px #AA820A !important;
-        }
+            /* Focus en los campos (al hacer clic) */
+            div.stTextInput > div > div > input:focus, 
+            div.stTextArea > div > div > textarea:focus {
+                border-color: #AA820A !important;
+                box-shadow: 0 0 0 1px #AA820A !important;
+            }
 
-        /* Botón de envío Industrial/Dorado personalizado */
-        div.stFormSubmitButton > button {
-            background: linear-gradient(135deg, #D4AF37 0%, #AA820A 100%) !important;
-            color: #FFFFFF !important;
-            border: 1px solid #8E6B08 !important;
-            border-radius: 8px !important;
-            padding: 14px 20px !important;
-            font-weight: 700 !important;
-            font-size: 0.9rem !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.05em !important;
-            width: 100% !important;
-            transition: all 0.3s ease !important;
-            cursor: pointer !important;
-        }
+            /* Botón de envío Fabrica/Dorado personalizado */
+            div.stFormSubmitButton > button {
+                background: linear-gradient(135deg, #D4AF37 0%, #AA820A 100%) !important;
+                color: #FFFFFF !important;
+                border: 1px solid #8E6B08 !important;
+                border-radius: 8px !important;
+                padding: 14px 20px !important;
+                font-weight: 700 !important;
+                font-size: 0.9rem !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.05em !important;
+                width: 100% !important;
+                transition: all 0.3s ease !important;
+                cursor: pointer !important;
+            }
 
-        div.stFormSubmitButton > button:hover {
-            background: #8E6B08 !important;
-            box-shadow: 0 4px 15px rgba(170, 130, 10, 0.35) !important;
-            transform: translateY(-1px) !important;
-            color: #FFFFFF !important;
-        }
-    </style>
-    """, unsafe_allow_html=True)
+            div.stFormSubmitButton > button:hover {
+                background: #8E6B08 !important;
+                box-shadow: 0 4px 15px rgba(170, 130, 10, 0.35) !important;
+                transform: translateY(-1px) !important;
+                color: #FFFFFF !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
 
-   # 2. Bloque único del Formulario de Contacto
-    with st.form("form_valencia"):
-        user_name = st.text_input("Nombre Completo:", placeholder="Ej. Carlos Sevilla")
-        user_phone = st.text_input("Teléfono / WhatsApp:", placeholder="Ej. 04166481679")
-        user_city = st.text_input("Ciudad / Estado:", placeholder="Ej. Valencia, Carabobo")
-        user_msg = st.text_area("Detalles de tu consulta:", placeholder="Escribe aquí los detalles de tu requerimiento...")
-        
-        submit_btn = st.form_submit_button("Enviar Mensaje a Planta Valencia")
+        # 2. Bloque único del Formulario de Contacto
+        with st.form("form_valencia"):
+            user_name = st.text_input("Nombre Completo:", placeholder="Ej. Carlos Sevilla")
+            user_phone = st.text_input("Teléfono / WhatsApp:", placeholder="Ej. 04166481679")
+            user_city = st.text_input("Ciudad / Estado:", placeholder="Ej. Valencia, Carabobo")
+            user_msg = st.text_area("Detalles de tu consulta:", placeholder="Escribe aquí los detalles de tu requerimiento...")
 
-        if submit_btn:
-            if user_name and user_phone:
-                st.success("¡Gracias por contactar a Car-Sev C.A.! Tu mensaje ha sido enviado a nuestra planta en Valencia. Un asesor te responderá a la brevedad.")
-            else:
-                st.warning("Por favor completa tu Nombre y Teléfono para procesar el mensaje.")
+            submit_btn = st.form_submit_button("Enviar Mensaje a Produccion Valencia")
 
-    st.markdown("</div>", unsafe_allow_html=True)
+            if submit_btn:
+                if user_name and user_phone:
+                    st.success("¡Gracias por contactar a Car-Sev C.A.! Tu mensaje ha sido enviado a nuestra fabrica en Valencia. Un asesor te responderá a la brevedad.")
+                else:
+                    st.warning("Por favor completa tu Nombre y Teléfono para procesar el mensaje.")
+
+        st.markdown("</div>", unsafe_allow_html=True)
 
 # ── 12. PIE DE PÁGINA PROFESIONAL (FOOTER) ──────────────────────────────────
 st.markdown("""
 <div class="divider-gold" style="max-width:100%; margin:40px 0 10px 0;"></div>
 <footer style="text-align:center; padding: 20px 10px 30px 10px;">
     <p style="font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:#8B0000; letter-spacing:0.15em; margin-bottom:4px;">
-        CAR-SEV C.A.    </p>
+        CAR-SEV C.A.
+    </p>
     <p class="ornament-gold" style="font-size:0.7rem; margin-bottom:8px;">
         © 2026 CAR-SEV C.A. · TODOS LOS DERECHOS RESERVADOS · VALENCIA, CARABOBO, VENEZUELA
-    </p>
+    </p> 
     <p style="font-size:0.75rem; color:#777777;">
-        Fabricación Industrial de Moldes de Goma y Pavimentos Decorativos de Alta Resistencia
+        Fabricación de Moldes de Goma y Pavimentos Decorativos de Alta Resistencia
     </p>
 </footer>
 """, unsafe_allow_html=True)
