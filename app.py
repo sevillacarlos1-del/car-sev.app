@@ -697,7 +697,14 @@ with st.sidebar:
 
     st.markdown(wa_button("Hola Car-Sev C.A.! Quisiera asesoría rápida sobre moldes de goma.", "💬 WhatsApp Directo"), unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
-
+# Nota informativa de instalación PWA
+    st.markdown("---")
+    st.markdown("### 📲 **Instala la App en tu Móvil**")
+    st.info(
+        "**¿Quieres tener esta App en tu pantalla de inicio?**\n\n"
+        "• **Android (Chrome):** Toca los 3 puntos arriba a la derecha y selecciona **'Agregar a la pantalla principal'** o **'Instalar aplicación'**.\n\n"
+        "• **iPhone (Safari):** Toca el botón **Compartir** (el cuadro con la flecha hacia arriba) y selecciona **'Agregar al inicio'**."
+    )
 
 # ── 8. SECCIÓN 1: INICIO / PRESENTACIÓN ──────────────────────────────────────
 if "🏠 Inicio" in menu_option or "Inicio" in menu_option:
